@@ -22,5 +22,6 @@ const NotesSchema = new mongoose.Schema({
         default:Date.now
     }
 })
-
-module.exports = mongoose.model('notes',NotesSchema);
+const Note = mongoose.model('notes',NotesSchema);
+Note.createIndexes();
+module.exports = Note;
