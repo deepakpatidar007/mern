@@ -1,59 +1,56 @@
 import { useState } from "react";
 import NoteContext from "./noteContext";
 
-const NoteState = (props)=>{
-    const inotes = [
-            {
-              "_id": "61440ac9bb1e76d565344d16",
-              "user": "613d9ccbfaf7403e3f156620",
-              "title": "sankalp",
-              "description": "please remember your sankalp",
-              "tag": "Must to",
-              "date": "2021-09-17T03:26:01.850Z",
-              "__v": 0
-            },
-            {
-              "_id": "61440ad7bb1e76d565344d18",
-              "user": "613d9ccbfaf7403e3f156620",
-              "title": "sankalp with update 1",
-              "description": "please remember your sankalp",
-              "tag": "Must to",
-              "date": "2021-09-17T03:26:15.193Z",
-              "__v": 0
-            },
-            {
-              "_id": "61440adebb1e76d565344d1a",
-              "user": "613d9ccbfaf7403e3f156620",
-              "title": "sankalp with update 2",
-              "description": "please remember your sankalp",
-              "tag": "Must to",
-              "date": "2021-09-17T03:26:22.951Z",
-              "__v": 0
-            },
-            {
-              "_id": "61440ae4bb1e76d565344d1c",
-              "user": "613d9ccbfaf7403e3f156620",
-              "title": "sankalp with update 3",
-              "description": "please remember your sankalp",
-              "tag": "Must to",
-              "date": "2021-09-17T03:26:28.444Z",
-              "__v": 0
-            },
-            {
-              "_id": "61440ae9bb1e76d565344d1e",
-              "user": "613d9ccbfaf7403e3f156620",
-              "title": "sankalp with update 4",
-              "description": "please remember your sankalp",
-              "tag": "Must to",
-              "date": "2021-09-17T03:26:33.742Z",
-              "__v": 0
+const NoteState = (props) => {
+    const host = "http://localhost:5000"
+    const inotes = []
+    const [notes, setNotes] = useState(inotes);
+
+    const getnotes = async() => {
+        const response = await fetch('http://localhost:5000/api/notes/getallnotes', {
+            method: 'GET',
+            headers: {
+
+                'Content-Type': 'application/json',
+                'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjEzZDljY2JmYWY3NDAzZTNmMTU2NjIwIn0sImlhdCI6MTYzMjAzMzU2M30.j6UI2zzqlcDDQ7c8eKJqHpESAAbcemSKmojppXNrhN0'
+
             }
-        ]
-    const [notes,setNotes] = useState(inotes);
-    return(
-            <NoteContext.Provider value={{notes,setNotes}}>
-                {props.children}
-            </NoteContext.Provider>
+        })
+        const json = await response.json()
+        console.log(json);
+
+
+    }
+
+    // Add a note
+
+    const addnote = (props) => {
+        const note = {
+            "_id": "61440ae9bb1e76d565344d1e",
+            "user": "613d9ccbfaf7403e3f156620",
+            "title": props.title,
+            "description": props.description,
+            "tag": props.tag,
+            "date": "2021-09-17T03:26:33.742Z",
+            "__v": 0
+        }
+        setNotes(notes.concat(note));
+    }
+    // Delete a note
+    const deletenote = (id) => {
+        const newNotes = notes.filter((note) => {
+            return note._id !== id
+        })
+        setNotes(newNotes);
+    }
+    // Edit a note
+    const editnote = () => {
+
+    }
+    return (
+        <NoteContext.Provider value={{ notes, addnote, deletenote, editnote, getnotes }}>
+            {props.children}
+        </NoteContext.Provider>
     )
 }
 

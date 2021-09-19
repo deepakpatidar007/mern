@@ -10,3 +10,6 @@ body {
 .navbar-topcontroler{
   width: 100vw;
 }
+i{
+  cursor: pointer;
+}
