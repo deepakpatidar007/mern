@@ -1,29 +1,42 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import Navbar from './components/Navbar'
 import './index.css'
-import {
-  Switch,
-  Route
-} from "react-router-dom";
+import Login from './components/Login';
+import Signup from './components/Signup';
+import { BrowserRouter as Router,Switch,Route } from "react-router-dom";
 import Home from './components/Home'
 import About from './components/About'
-import NoteState from './context/notes/NoteState';
+import NoteState from './context/notes/NoteState'
+import Alert from './components/Alert';
+
 
 const App = () => {
+
   return (
-    <div>
-    <NoteState>
-      <Navbar />
-      <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route exact path="/about">
-            <About />
-          </Route>
-        </Switch>
+    <>
+      <div>
+        <NoteState>
+          <Router>
+            <Navbar />
+            <Alert />
+            <Switch>
+              <Route exact path="/">
+                <Home />
+              </Route>
+              <Route exact path="/about">
+                <About />
+              </Route>
+              <Route exact path="/login">
+                <Login />
+              </Route>
+              <Route exact path="/signup">
+                <Signup />
+              </Route>
+            </Switch>
+          </Router>
         </NoteState>
-    </div>
+      </div>
+    </>
   )
 }
 

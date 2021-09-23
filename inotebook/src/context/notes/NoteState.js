@@ -2,56 +2,102 @@ import { useState } from "react";
 import NoteContext from "./noteContext";
 
 const NoteState = (props) => {
-    const host = "http://localhost:5000"
-    const inotes = []
-    const [notes, setNotes] = useState(inotes);
-
-    const getnotes = async() => {
-        const response = await fetch('http://localhost:5000/api/notes/getallnotes', {
-            method: 'GET',
-            headers: {
-
-                'Content-Type': 'application/json',
-                'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjEzZDljY2JmYWY3NDAzZTNmMTU2NjIwIn0sImlhdCI6MTYzMjAzMzU2M30.j6UI2zzqlcDDQ7c8eKJqHpESAAbcemSKmojppXNrhN0'
-
-            }
-        })
-        const json = await response.json()
-        console.log(json);
-
-
-    }
-
-    // Add a note
-
-    const addnote = (props) => {
-        const note = {
-            "_id": "61440ae9bb1e76d565344d1e",
-            "user": "613d9ccbfaf7403e3f156620",
-            "title": props.title,
-            "description": props.description,
-            "tag": props.tag,
-            "date": "2021-09-17T03:26:33.742Z",
-            "__v": 0
+    const host = 'http://localhost:5000'
+    const notesInitial = []
+    const [notes, setNotes] = useState(notesInitial)
+    const [alert,setAlert] = useState(null);
+    // Get all Notes
+    const getNotes = async () => {
+        // API Call    
+        try {
+            const response = await fetch(`${host}/api/notes/getallnotes`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "auth-token": localStorage.getItem('token')
+                }
+            });
+            const json = await response.json()
+           // setNotes(json);
+        } catch (error) {
+            console.log(error);
         }
-        setNotes(notes.concat(note));
     }
-    // Delete a note
-    const deletenote = (id) => {
-        const newNotes = notes.filter((note) => {
-            return note._id !== id
-        })
-        setNotes(newNotes);
-    }
-    // Edit a note
-    const editnote = () => {
+    // Add a Note
+    const addNote = async (note) => {
+        try {
+            const response = await fetch(`${host}/api/notes/addnote`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "auth-token": localStorage.getItem('token')
+                },
+                body: JSON.stringify({ title: note.title, description: note.description, tag: note.tag })
+            });
+            const data = await response.json();
+            console.log(data);
+            getNotes();
 
+        } catch (error) {
+            console.log(error);
+        }
     }
+
+    // Delete a Note
+    const deleteNote = async (id) => {
+        try {
+            const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'auth-token': localStorage.getItem('token')
+                }
+            })
+            const data = response.json();
+            console.log(data);
+            const newNote = notes.filter((note) => {
+                return note._id !== id;
+            })
+            setNotes(newNote);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // Delete Note
+    const editNote = async(note)=>{
+        try {
+            const response = await fetch(`${host}/api/notes/updatenote/${note._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'auth-token': localStorage.getItem('token')
+                },
+                body: JSON.stringify({ title: note.title, description: note.description, tag: note.tag })
+            })
+            getNotes();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const showAlert = (message, type)=>{
+        setAlert({
+          msg: message,
+          type: type
+        })
+        setTimeout(() => {
+            setAlert();
+        }, 1500);
+    }
+
     return (
-        <NoteContext.Provider value={{ notes, addnote, deletenote, editnote, getnotes }}>
+
+        <NoteContext.Provider value={{ notes, alert, getNotes, addNote, deleteNote, editNote, showAlert }}>
             {props.children}
         </NoteContext.Provider>
+
     )
+
 }
 
 export default NoteState;

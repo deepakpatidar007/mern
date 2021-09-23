@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 var fetchuser = require('../middleware/fetchuser');
 
 const JWT_SECRET = 'iamwebdevelope$r';
-
+var success = '';
 // Route1: Create a user using POST "/api/auth/createuser". No login required
 router.post('/createuser',[
     body('name','Enter a valid name').isLength({min:3}),
@@ -36,15 +36,15 @@ router.post('/createuser',[
         email:req.body.email
        })
 
-       const data = {
-           user:{
-               id:user.id
-           }
-       }
-       const authtoken = jwt.sign(data,JWT_SECRET);
-       console.log(authtoken); 
+    //    const data = {
+    //        user:{
+    //            id:user.id
+    //        }
+    //    }
+    //    const authtoken = jwt.sign(d  ata,JWT_SECRET);
+    //    console.log(authtoken); 
 
-    res.json({authtoken});
+    //res.json({authtoken});
     }catch(error){
         console.log(error);
         res.status(500).send("internal server error");
@@ -69,8 +69,9 @@ router.post('/login',[
 
     const passwordCompare = await bcrypt.compare(password,user.password);
     if(!passwordCompare){
-        return res.status(400).json({error:'please try to login with correct credential'})
+        return res.status(400).json({error:'please try to login with correct password'})
     }
+    
     const data = {
         user:{
             id:user.id
@@ -78,7 +79,8 @@ router.post('/login',[
     }
     const authtoken = jwt.sign(data,JWT_SECRET);
     console.log(authtoken);
-    res.json({authtoken})
+    success = true;
+    res.json({success,authtoken})
 }catch(error){
     console.log(error);
     res.status(500).send("internal server error");
