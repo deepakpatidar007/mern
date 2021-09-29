@@ -1,16 +1,15 @@
 const express = require('express');
-const fetchuser = require('../middleware/fetchuser').default;
+const fetchuser = require('../middleware/fetchuser')
 const Note = require('../models/Note');
-const User = require('../models/User');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 
 
 // Route1: Get all the notes using GET "/api/notes/getallnotes". Login required
-router.get('/getallnotes',fetchuser,async (req,res)=>{
+router.get('/getallnotes',fetchuser,[],async(req,res)=>{
     try {
         const notes = await Note.find({user:req.user.id});
-        res.json(notes);
+       res.json(notes);
     } catch (error) {
         console.log(error);
         res.status(500).send("internal server error");

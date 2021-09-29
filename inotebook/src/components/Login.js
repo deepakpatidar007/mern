@@ -8,6 +8,9 @@ const Login = () => {
     const [credential, setCredential] = useState({ email: '', password: '' });
     let history = useHistory();
 
+    const onChange = (e) => {
+        setCredential({ ...credential, [e.target.name]: e.target.value })
+    }
     const handleClick = async(e) => {
         e.preventDefault();
         try{
@@ -26,19 +29,16 @@ const Login = () => {
         if(json.success){
             localStorage.setItem('token',json.authtoken);
             history.push('/');
+            showAlert('Loged in successfully','success');
         }else{
-            history.push('/login')
-            return showAlert('Incorrect credentials','danger');
-            
+            showAlert('Incorrect credentials','danger');
+            return history.push('/login')
         }
-        showAlert('Loged in successfully','success');
     }catch(error){
         console.log(error);
     }
     }
-    const onChange = (e) => {
-        setCredential({ ...credential, [e.target.name]: e.target.value })
-    }
+    
     return (
         <div>
             <form>

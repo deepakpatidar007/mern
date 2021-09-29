@@ -24,11 +24,14 @@ const Signup = () => {
                 })
             })
             const json = await response.json();
-            if(json){
+            if(json.success){
+                showAlert('Registration successfully','success');
                 history.push('/login');
+            }else{
+                return showAlert('An error occured','danger');
             }
-            console.log(json);
-            showAlert('Registration successfully','success');
+            
+            
         } catch (error) {
             console.log(error);
         }
